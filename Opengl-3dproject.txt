@@ -1,0 +1,1293 @@
+#
+include < gl / freeglut.h > #include < math.h > #include < windows.h > #include < iostream > #include < stdlib.h > #include "SOIL.h"
+
+#
+ifdef _APPLE_# include < GLUT / glut.h > /* Open GL Util    APPLE */ #
+    else# include < GL / glut.h > /* Open GL Util    OpenGL*/ #endif
+
+int hidden = 0;
+
+int StopCommands = 0;
+
+int sch_cul_1 = 0;
+int sch_cul_2 = 0;
+int sch_cul_3 = 0;
+int sch_cul_4 = 0;
+int sch_cul_5 = 0;
+
+int vizc1 = 0, vizc2 = 0, vizc3 = 0, vizc4 = 0, vizc5 = 0;
+
+struct Punct {
+    int x, y;
+}
+v[45], p;
+
+int score = 0;
+
+float aria(Punct a, Punct b, Punct c) {
+    float AB, BC, AC, P = 0;
+    AB = sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
+    BC = sqrt((c.x - b.x) * (c.x - b.x) + (c.y - b.y) * (c.y - b.y));
+    AC = sqrt((c.x - a.x) * (c.x - a.x) + (c.y - a.y) * (c.y - a.y));
+    P = (AB + BC + AC) / 2;
+    return sqrt(P * (P - AB) * (P - BC) * (P - AC));
+}
+float verificare(Punct a, Punct b, Punct c, Punct m) {
+    if (aria(a, b, m) + aria(a, c, m) + aria(b, m, c) == aria(a, b, c))
+        return 1;
+    else
+        return 0;
+}
+
+int ColiziuneGhetari(int x, int z) {
+    //varf vapor
+    p.x = x;
+    p.y = z;
+    //ghetar1
+    v[0].x = -10;
+    v[0].y = 25;
+    v[1].x = -10;
+    v[1].y = 15;
+    v[2].x = 0;
+    v[2].y = 8;
+    v[3].x = 10;
+    v[3].y = 15;
+    v[4].x = 10;
+    v[4].y = 25;
+
+    //ghetar2
+    v[5].x = -38;
+    v[5].y = -19;
+    v[6].x = -38;
+    v[6].y = -29;
+    v[7].x = -23;
+    v[7].y = -36;
+    v[8].x = -18;
+    v[8].y = -29;
+    v[9].x = -18;
+    v[9].y = -19;
+    //ghetar3
+    v[10].x = 14;
+    v[10].y = -15;
+    v[11].x = 14;
+    v[11].y = -25;
+    v[12].x = 24;
+    v[12].y = -32;
+    v[13].x = 34;
+    v[13].y = -25;
+    v[14].x = 34;
+    v[14].y = -15;
+
+    //ghetar 1 verif
+    {
+        if (verificare(v[0], v[1], v[3], p) == 1)
+            return 0;
+        if (verificare(v[1], v[3], v[0], p) == 1)
+            return 0;
+        if (verificare(v[3], v[0], v[1], p) == 1)
+            return 0;
+        if (verificare(v[0], v[4], v[3], p) == 1)
+            return 0;
+        if (verificare(v[4], v[3], v[0], p) == 1)
+            return 0;
+        if (verificare(v[3], v[0], v[4], p) == 1)
+            return 0;
+        if (verificare(v[1], v[2], v[3], p) == 1)
+            return 0;
+        if (verificare(v[2], v[3], v[1], p) == 1)
+            return 0;
+        if (verificare(v[3], v[1], v[2], p) == 1)
+            return 0;
+        if (verificare(v[0], v[1], v[2], p) == 1)
+            return 0;
+        if (verificare(v[1], v[2], v[0], p) == 1)
+            return 0;
+        if (verificare(v[2], v[0], v[1], p) == 1)
+            return 0;
+        if (verificare(v[2], v[3], v[4], p) == 1)
+            return 0;
+        if (verificare(v[3], v[4], v[2], p) == 1)
+            return 0;
+        if (verificare(v[4], v[2], v[3], p) == 1)
+            return 0;
+    }
+
+    //ghetar 2 verif
+    {
+        if (verificare(v[5], v[6], v[8], p) == 1)
+            return 0;
+        if (verificare(v[6], v[8], v[5], p) == 1)
+            return 0;
+        if (verificare(v[8], v[5], v[6], p) == 1)
+            return 0;
+        if (verificare(v[5], v[9], v[8], p) == 1)
+            return 0;
+        if (verificare(v[9], v[8], v[5], p) == 1)
+            return 0;
+        if (verificare(v[8], v[5], v[9], p) == 1)
+            return 0;
+        if (verificare(v[6], v[7], v[8], p) == 1)
+            return 0;
+        if (verificare(v[7], v[8], v[6], p) == 1)
+            return 0;
+        if (verificare(v[8], v[6], v[7], p) == 1)
+            return 0;
+        if (verificare(v[5], v[6], v[7], p) == 1)
+            return 0;
+        if (verificare(v[6], v[7], v[5], p) == 1)
+            return 0;
+        if (verificare(v[7], v[5], v[6], p) == 1)
+            return 0;
+        if (verificare(v[7], v[8], v[9], p) == 1)
+            return 0;
+        if (verificare(v[8], v[9], v[7], p) == 1)
+            return 0;
+        if (verificare(v[9], v[7], v[8], p) == 1)
+            return 0;
+        if (verificare(v[5], v[8], v[9], p) == 1)
+            return 0;
+        if (verificare(v[8], v[9], v[5], p) == 1)
+            return 0;
+        if (verificare(v[9], v[5], v[8], p) == 1)
+            return 0;
+        if (verificare(v[5], v[6], v[9], p) == 1)
+            return 0;
+        if (verificare(v[6], v[9], v[5], p) == 1)
+            return 0;
+        if (verificare(v[9], v[5], v[6], p) == 1)
+            return 0;
+    }
+
+    //ghetar 3 verif
+    {
+        if (verificare(v[10], v[11], v[13], p) == 1)
+            return 0;
+        if (verificare(v[11], v[13], v[10], p) == 1)
+            return 0;
+        if (verificare(v[13], v[10], v[11], p) == 1)
+            return 0;
+        if (verificare(v[10], v[14], v[13], p) == 1)
+            return 0;
+        if (verificare(v[14], v[13], v[10], p) == 1)
+            return 0;
+        if (verificare(v[13], v[10], v[14], p) == 1)
+            return 0;
+        if (verificare(v[11], v[12], v[13], p) == 1)
+            return 0;
+        if (verificare(v[12], v[13], v[11], p) == 1)
+            return 0;
+        if (verificare(v[13], v[11], v[12], p) == 1)
+            return 0;
+        if (verificare(v[10], v[11], v[12], p) == 1)
+            return 0;
+        if (verificare(v[11], v[12], v[10], p) == 1)
+            return 0;
+        if (verificare(v[12], v[10], v[11], p) == 1)
+            return 0;
+        if (verificare(v[12], v[13], v[14], p) == 1)
+            return 0;
+        if (verificare(v[13], v[14], v[12], p) == 1)
+            return 0;
+        if (verificare(v[14], v[12], v[13], p) == 1)
+            return 0;
+    }
+
+    return 1;
+}
+
+GLfloat fogColor[4] = {
+    0.07 f,
+    0.07 f,
+    0.07 f,
+    0.8 f
+}; // Fog Color
+
+GLfloat texpts[2][2][2] = {
+    {
+        {
+            1.0,
+            1.0
+        }, {
+            1.0,
+            0.0
+        }
+    },
+    {
+        {
+            0.0,
+            1.0
+        },
+        {
+            0.0,
+            0.0
+        }
+    }
+};
+
+#
+define imageWidth 80# define imageHeight 60
+
+GLubyte image[3 * imageWidth * imageHeight];
+GLuint textureWater;
+GLuint textureSky;
+GLuint textureHorizon;
+
+void init(void) {
+    GLfloat light_ambient[] = {
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    };
+    GLfloat light_diffuse[] = {
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    };
+    GLfloat light_specular[] = {
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    };
+    /*	light_position is NOT default value	*/
+    GLfloat light_position[] = {
+        10.0,
+        1.0,
+        10.0,
+        0.0
+    };
+    //GLfloat spotlight_direction[] = { 1.0, 1.0, 0.0, 0.0 };
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    //glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotlight_direction);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_DEPTH_TEST);
+}
+
+void ceata(void) {
+    glFogi(GL_FOG_MODE, GL_EXP); // Fog Mode
+    glFogfv(GL_FOG_COLOR, fogColor); // Set Fog Color
+    glFogf(GL_FOG_DENSITY, 0.06 f); // How Dense Will The Fog Be
+    glHint(GL_FOG_HINT, GL_DONT_CARE); // Fog Hint Value
+    glFogf(GL_FOG_START, 0.5 f); // Fog Start Depth
+    glFogf(GL_FOG_END, 10.0 f); // Fog End Depth
+    glEnable(GL_FOG);
+}
+void soare(void) {
+    glFogi(GL_FOG_MODE, GL_EXP); // Fog Mode
+    glFogfv(GL_FOG_COLOR, fogColor); // Set Fog Color
+    glFogf(GL_FOG_DENSITY, 0.0 f); // How Dense Will The Fog Be
+    glHint(GL_FOG_HINT, GL_DONT_CARE); // Fog Hint Value
+    glFogf(GL_FOG_START, 0.5 f); // Fog Start Depth
+    glFogf(GL_FOG_END, 10.0 f); // Fog End Depth
+    glEnable(GL_FOG);
+}
+
+void LoadTextureWater(void) {
+    GLuint textureWater;
+    glGenTextures(1, & textureWater);
+    glBindTexture(GL_TEXTURE_2D, textureWater);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP); // Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    int width, height;
+    unsigned char * image = SOIL_load_image("water.png", & width, & height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    // SOIL_free_image_data(image);
+    // glBindTexture(GL_TEXTURE_2D, 0);
+
+}
+void LoadTextureHorizon(void) {
+    GLuint textureHorizon;
+    glGenTextures(1, & textureHorizon);
+    glBindTexture(GL_TEXTURE_2D, textureHorizon);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP); // Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    int width, height;
+    unsigned char * image = SOIL_load_image("horizon.png", & width, & height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    // SOIL_free_image_data(image);
+    // glBindTexture(GL_TEXTURE_2D, 0);
+}
+void LoadTextureSky(void) {
+    GLuint textureSky;
+    glGenTextures(1, & textureSky);
+    glBindTexture(GL_TEXTURE_2D, textureSky);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP); // Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    int width, height;
+    unsigned char * image = SOIL_load_image("sky.png", & width, & height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    // SOIL_free_image_data(image);
+    // glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+int ColiziuneMarginiHarta(int x, int z) {
+    if (x <= 45 && x >= -45 && z <= 45 && z >= -45)
+        return 1;
+    return 0;
+}
+
+// angle of rotation for the camera direction
+float angle = 0.0;
+// actual vector representing the camera's direction
+float lx = 0.0 f, lz = -1.0 f;
+// XZ position of the camera
+float x = 0.0 f, z = 5.0 f, camera = 1.0 f;
+int texture = 1;
+static GLdouble unghiRot = 0.0 f;
+enum {
+    LVL1,
+    LVL2
+};
+
+int rendermode = LVL2;
+
+void menu(int selection) {
+    rendermode = selection;
+    glutPostRedisplay();
+}
+
+void changeSize(int w, int h) {
+
+    // Prevent a divide by zero, when window is too short
+    // (you cant make a window of zero width).
+    if (h == 0)
+        h = 1;
+    float ratio = w * 1.0 / h;
+
+    glClearColor(0.0 f, 0.5 f, 1.0 f, 0.0 f);
+
+    // Use the Projection Matrix
+    glMatrixMode(GL_PROJECTION);
+
+    // Reset Matrix
+    glLoadIdentity();
+
+    // Set the viewport to be the entire window
+    glViewport(0, 0, w, h);
+
+    // Set the correct perspective.
+    gluPerspective(45.0 f, ratio, 1.0 f, 500.0 f);
+
+    // Get Back to the Modelview
+    glMatrixMode(GL_MODELVIEW);
+}
+void drawLevels() {
+    switch (rendermode) {
+    case LVL2:
+        //ghetarul 1:
+
+        glPushMatrix();
+        glBegin(GL_QUADS);
+        glVertex3f(10, 0, 25);
+        glVertex3f(10, 0, 15);
+        glVertex3f(-10, 0, 15);
+        glVertex3f(-10, 0, 25);
+
+        glVertex3f(10, 0, 15);
+        glVertex3f(10, 5, 15);
+        glVertex3f(-10, 5, 15);
+        glVertex3f(-10, 0, 15);
+
+        glVertex3f(10, 5, 15);
+        glVertex3f(-10, 5, 15);
+        glVertex3f(-10, 0, 25);
+        glVertex3f(10, 0, 25);
+
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+
+        glVertex3f(10, 0, 25);
+        glVertex3f(10, 5, 15);
+        glVertex3f(10, 0, 15);
+
+        glVertex3f(-10, 0, 25);
+        glVertex3f(-10, 5, 15);
+        glVertex3f(-10, 0, 15);
+
+        //p2
+        glVertex3f(-10, 0, 15);
+        glVertex3f(0, 0, 8);
+        glVertex3f(10, 0, 15);
+
+        glVertex3f(-10, 0, 15);
+        glVertex3f(-10, 5, 15);
+        glVertex3f(0, 0, 8);
+
+        glVertex3f(10, 0, 15);
+        glVertex3f(10, 5, 15);
+        glVertex3f(0, 0, 8);
+
+        glVertex3f(-10, 5, 15);
+        glVertex3f(10, 5, 15);
+        glVertex3f(0, 0, 8);
+
+        glEnd();
+        glPopMatrix();
+
+        //ghetarul 2:
+        glPushMatrix();
+        glBegin(GL_QUADS);
+        glVertex3f(-18, 0, -19);
+        glVertex3f(-18, 0, -29);
+        glVertex3f(-38, 0, -29);
+        glVertex3f(-38, 0, -19);
+
+        glVertex3f(-18, 0, -29);
+        glVertex3f(-18, 5, -29);
+        glVertex3f(-38, 5, -29);
+        glVertex3f(-38, 0, -29);
+
+        glVertex3f(-18, 5, -29);
+        glVertex3f(-38, 5, -29);
+        glVertex3f(-38, 0, -19);
+        glVertex3f(-18, 0, -19);
+
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+
+        glVertex3f(-18, 0, -19);
+        glVertex3f(-18, 5, -29);
+        glVertex3f(-18, 0, -29);
+
+        glVertex3f(-38, 0, -19);
+        glVertex3f(-38, 5, -29);
+        glVertex3f(-38, 0, -29);
+
+        //p2
+        glVertex3f(-38, 0, -29);
+        glVertex3f(-28, 0, -36);
+        glVertex3f(-18, 0, -29);
+
+        glVertex3f(-38, 0, -29);
+        glVertex3f(-38, 5, -29);
+        glVertex3f(-28, 0, -36);
+
+        glVertex3f(-18, 0, -29);
+        glVertex3f(-18, 5, -29);
+        glVertex3f(-28, 0, -36);
+
+        glVertex3f(-38, 5, -29);
+        glVertex3f(-18, 5, -29);
+        glVertex3f(-28, 0, -36);
+
+        glEnd();
+        glPopMatrix();
+
+        //ghetarul 3:
+        glPushMatrix();
+        glBegin(GL_QUADS);
+        glVertex3f(34, 0, -15);
+        glVertex3f(34, 0, -25);
+        glVertex3f(14, 0, -25);
+        glVertex3f(14, 0, -15);
+
+        glVertex3f(34, 0, -25);
+        glVertex3f(34, 5, -25);
+        glVertex3f(14, 5, -25);
+        glVertex3f(14, 0, -25);
+
+        glVertex3f(34, 5, -25);
+        glVertex3f(14, 5, -25);
+        glVertex3f(14, 0, -15);
+        glVertex3f(34, 0, -15);
+
+        glEnd();
+
+        glBegin(GL_TRIANGLES);
+
+        glVertex3f(34, 0, -15);
+        glVertex3f(34, 5, -25);
+        glVertex3f(34, 0, -25);
+
+        glVertex3f(14, 0, -15);
+        glVertex3f(14, 5, -25);
+        glVertex3f(14, 0, -25);
+
+        //p2
+        glVertex3f(14, 0, -25);
+        glVertex3f(24, 0, -32);
+        glVertex3f(34, 0, -25);
+
+        glVertex3f(14, 0, -25);
+        glVertex3f(14, 5, -25);
+        glVertex3f(24, 0, -32);
+
+        glVertex3f(34, 0, -25);
+        glVertex3f(34, 5, -25);
+        glVertex3f(24, 0, -32);
+
+        glVertex3f(14, 5, -25);
+        glVertex3f(34, 5, -25);
+        glVertex3f(24, 0, -32);
+
+        glEnd();
+        glPopMatrix();
+
+        glBegin(GL_QUADS);
+
+        glVertex3f(30, 0.2, 34);
+        glVertex3f(42, 0.2, 34);
+        glVertex3f(42, 0.2, 37);
+        glVertex3f(30, 0.2, 37);
+
+        glEnd();
+        break;
+    case LVL1:
+        //1:
+        glColor3f(0.0, 0.0, 1.0);
+        glPushMatrix();
+        glTranslatef(-0.75, 0.5, 0.0);
+        glRotatef(90.0, 1.0, 0.0, 0.0);
+        glutSolidTorus(0.275, 0.85, 15, 15);
+        glPopMatrix();
+        glPushMatrix();
+        glColor3f(0.84 f, 0.77 f, 0.71 f);
+        glTranslatef(-0.75, 1.0, 0.0);
+        glutSolidSphere(0.5, 15, 15);
+        glPopMatrix();
+
+        glPushMatrix();
+        glColor3f(0.0, 1.0, 1.0);
+
+        if (sch_cul_1 == 1)
+            glColor3f(1.0, 0.0, 0.0);
+        else
+            glColor3f(0.0, 0.0, 1.0);
+
+        glBegin(GL_POLYGON);
+        glVertex3f(-1.75, 0.2, 1);
+        glVertex3f(0.45, 0.2, 1);
+        glVertex3f(0.45, 0.2, -1);
+        glVertex3f(-1.75, 0.2, -1);
+
+        glEnd();
+        glPopMatrix();
+
+        //2
+        glColor3f(0.0, 0.0, 1.0);
+        glPushMatrix();
+        glTranslatef(26.0, 0.5, 37.0);
+        glRotatef(90.0, 1.0, 0.0, 0.0);
+        glutSolidTorus(0.275, 0.85, 15, 15);
+        glPopMatrix();
+        glPushMatrix();
+        glColor3f(0.84 f, 0.77 f, 0.71 f);
+        glTranslatef(26.0, 1.0, 37.0);
+        glutSolidSphere(0.5, 15, 15);
+        glPopMatrix();
+
+        glPushMatrix();
+        glColor3f(0.0, 1.0, 1.0);
+
+        if (sch_cul_2 == 1)
+            glColor3f(1.0, 0.0, 0.0);
+        else
+            glColor3f(0.0, 0.0, 1.0);
+        glBegin(GL_POLYGON);
+
+        glVertex3f(25, 0.2, 38);
+        glVertex3f(27.2, 0.2, 38);
+        glVertex3f(27.2, 0.2, 36);
+        glVertex3f(25, 0.2, 36);
+
+        glEnd();
+        glPopMatrix();
+
+        //3:
+
+        glColor3f(0.0, 0.0, 1.0);
+        glPushMatrix();
+        glTranslatef(26.0, 0.5, -39.0);
+        glRotatef(90.0, 1.0, 0.0, 0.0);
+        glutSolidTorus(0.275, 0.85, 15, 15);
+        glPopMatrix();
+        glPushMatrix();
+        glColor3f(0.84 f, 0.77 f, 0.71 f);
+        glTranslatef(26.0, 1.0, -39.0);
+        glutSolidSphere(0.5, 15, 15);
+        glPopMatrix();
+
+        glPushMatrix();
+        //glColor3f(0.0, 1.0, 1.0);
+        //if (sch_cul_3 == 1)
+        //	glColor3f(1.0, 0.0, 0.0);
+        //else
+        //	glColor3f(0.0, 0.0, 1.0);
+        glBegin(GL_POLYGON);
+
+        glVertex3f(-25, 0.2, -38);
+        glVertex3f(27.2, 0.2, -38);
+        glVertex3f(27.2, 0.2, -40);
+        glVertex3f(25, 0.2, -40);
+
+        glEnd();
+        glPopMatrix();
+
+        //4:
+
+        glColor3f(0.0, 0.0, 1.0);
+        glPushMatrix();
+        glTranslatef(-24.0, 0.5, 37.0);
+        glRotatef(90.0, 1.0, 0.0, 0.0);
+        glutSolidTorus(0.275, 0.85, 15, 15);
+        glPopMatrix();
+        glPushMatrix();
+        glColor3f(0.84 f, 0.77 f, 0.71 f);
+        glTranslatef(-24, 1.0, 37.0);
+        glutSolidSphere(0.5, 15, 15);
+        glPopMatrix();
+
+        glColor3f(0.0, 1.0, 1.0);
+        if (sch_cul_4 == 1)
+            glColor3f(1.0, 0.0, 0.0);
+        else
+            glColor3f(0.0, 0.0, 1.0);
+
+        glPushMatrix();
+        glBegin(GL_POLYGON);
+
+        glVertex3f(-25, 0.2, 38);
+        glVertex3f(-22.8, 0.2, 38);
+        glVertex3f(-22.8, 0.2, 36);
+        glVertex3f(-25, 0.2, 36);
+
+        glEnd();
+        glPopMatrix();
+
+        //5:
+
+        glColor3f(0.0, 0.0, 1.0);
+        glPushMatrix();
+        glTranslatef(-24.0, 0.5, -39.0);
+        glRotatef(90.0, 1.0, 0.0, 0.0);
+        glutSolidTorus(0.275, 0.85, 15, 15);
+        glPopMatrix();
+        glPushMatrix();
+        glColor3f(0.84 f, 0.77 f, 0.71 f);
+        glTranslatef(-24.0, 1.0, -39.0);
+        glutSolidSphere(0.5, 15, 15);
+        glPopMatrix();
+
+        glPushMatrix();
+        glColor3f(0.0, 1.0, 1.0);
+        if (sch_cul_5 == 1)
+            glColor3f(1.0, 0.0, 0.0);
+        else
+            glColor3f(0.0, 0.0, 1.0);
+        glBegin(GL_POLYGON);
+
+        glVertex3f(-25, 0.2, -38);
+        glVertex3f(-22.8, 0.2, -38);
+        glVertex3f(-22.8, 0.2, -40);
+        glVertex3f(-25, 0.2, -40);
+
+        glEnd();
+        glPopMatrix();
+        break;
+    }
+}
+
+/* You must have a display callback that GLUT calls to draw everything. */
+void displayCall() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-2.0, 3.0, -2.0, 2.0, -2.0, 500.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    // gluLookAt(2, 2, 2, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glScalef(.005, .005, .005);
+    // glRotatef(20, 0, 1, 0);
+    //glRotatef(30, 0, 0, 1);
+    //glRotatef(5, 1, 0, 0);
+    glTranslatef(-300, 0, 0);
+
+    glColor3f(1, 0, 0);
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'G');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'A');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'M');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'E');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, ' ');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'O');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'V');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'E');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'R');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, '!');
+
+    glutSwapBuffers();
+}
+void displayWin() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 500.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    // gluLookAt(2, 2, 2, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glScalef(.005, .005, .005);
+    // glRotatef(20, 0, 1, 0);
+    //glRotatef(30, 0, 0, 1);
+    //glRotatef(5, 1, 0, 0);
+    glTranslatef(-300, 0, 0);
+
+    glColor3f(1, 0, 0);
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'Y');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'O');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'U');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, ' ');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'W');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'I');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, 'N');
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, '!');
+
+    glutSwapBuffers();
+}
+
+int ColiziuneColaci(int x, int z) {
+    //varf vapor
+    p.x = x;
+    p.y = z;
+    //colac1
+    v[0].x = -1.75;
+    v[0].y = 1;
+    v[1].x = 0.45;
+    v[1].y = 1;
+    v[2].x = -1.75;
+    v[2].y = -1;
+    v[3].x = 0.45;
+    v[3].y = -1;
+    //colac2
+    v[4].x = 25;
+    v[4].y = 38;
+    v[5].x = 27.2;
+    v[5].y = 38;
+    v[6].x = 27.2;
+    v[6].y = 36;
+    v[7].x = 25;
+    v[7].y = 36;
+    //colac3
+    v[8].x = 25;
+    v[8].y = -38;
+    v[9].x = 27.2;
+    v[9].y = -38;
+    v[10].x = 27.2;
+    v[10].y = -40;
+    v[11].x = 25;
+    v[11].y = -40;
+    //colac4
+    v[12].x = -25;
+    v[12].y = 38;
+    v[13].x = -22.8;
+    v[13].y = 38;
+    v[14].x = -22.8;
+    v[14].y = 36;
+    v[15].x = -25;
+    v[15].y = 36;
+    //colac5
+    v[16].x = -25;
+    v[16].y = -38;
+    v[17].x = -22.8;
+    v[17].y = -38;
+    v[18].x = -22.8;
+    v[18].y = -40;
+    v[19].x = -25;
+    v[19].y = -40;
+
+    //colac 1 verif
+    if (verificare(v[0], v[1], v[2], p) == 1) {
+        sch_cul_1 = 1;
+        if (vizc1 == 0) {
+            score++;
+            vizc1++;
+        }
+        return 0;
+    }
+    if (verificare(v[0], v[2], v[3], p) == 1) {
+        sch_cul_1 = 1;
+        if (vizc1 == 0) {
+            score++;
+            vizc1++;
+        }
+        return 0;
+    }
+
+    //colac 2 verif
+    if (verificare(v[4], v[5], v[6], p) == 1) {
+        sch_cul_2 = 1;
+        if (vizc2 == 0) {
+            score++;
+            vizc2++;
+        }
+        return 0;
+    }
+    if (verificare(v[4], v[6], v[7], p) == 1) {
+        sch_cul_2 = 1;
+        if (vizc2 == 0) {
+            score++;
+            vizc2++;
+        }
+        return 0;
+    }
+    //colac 3 verif
+    if (verificare(v[8], v[9], v[10], p) == 1) {
+        sch_cul_3 = 1;
+        if (vizc3 == 0) {
+            score++;
+            vizc3++;
+        }
+        return 0;
+    }
+    if (verificare(v[8], v[10], v[11], p) == 1) {
+        sch_cul_3 = 1;
+        if (vizc3 == 0) {
+            score++;
+            vizc3++;
+        }
+        return 0;
+    }
+    //colac 4 verif
+    if (verificare(v[12], v[13], v[14], p) == 1) {
+        sch_cul_4 = 1;
+        if (vizc4 == 0) {
+            score++;
+            vizc4++;
+        }
+        return 0;
+    }
+    if (verificare(v[12], v[14], v[15], p) == 1) {
+        sch_cul_4 = 1;
+        if (vizc4 == 0) {
+            score++;
+            vizc4++;
+        }
+        return 0;
+    }
+    //colac 5 verif
+    if (verificare(v[16], v[17], v[18], p) == 1) {
+        sch_cul_5 = 1;
+        if (vizc5 == 0) {
+            score++;
+            vizc5++;
+        }
+        return 0;
+    }
+    if (verificare(v[16], v[18], v[19], p) == 1) {
+        sch_cul_5 = 1;
+        if (vizc1 == 0) {
+            score++;
+            vizc1++;
+        }
+        return 0;
+    }
+
+    return 1;
+}
+int ColiziuneFinish(int x, int z) {
+    //varf vapor
+    p.x = x;
+    p.y = z;
+    //colac1
+    v[0].x = 30;
+    v[0].y = 34;
+    v[1].x = 42;
+    v[1].y = 34;
+    v[2].x = 42;
+    v[2].y = 37;
+    v[3].x = 30;
+    v[3].y = 37;
+    //colac 1 verif
+    if (verificare(v[0], v[1], v[2], p) == 1) {
+        return 0;
+    }
+    if (verificare(v[0], v[2], v[3], p) == 1) {
+        return 0;
+    }
+    return 1;
+}
+void renderScene(void) {
+    //init();
+    if (rendermode == LVL2)
+        ceata();
+    else
+        soare();
+
+    // Clear Color and Depth Buffers
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Reset transformations
+    glLoadIdentity();
+    // Set the camera
+    gluLookAt(x, camera, z,
+        x + lx, 1.0 f, z + lz,
+        0.0 f, 1.0 f, 0.0 f);
+    switch (rendermode) {
+    case LVL2:
+        //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        //glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        break;
+    case LVL1:
+        glColor3f(0.9 f, 0.9 f, 0.9 f);
+        break;
+    }
+
+    // Draw ground
+    glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(1.0, 1.0, 1.0);
+
+    glEnable(GL_TEXTURE_2D);
+    if (texture == 1) {
+
+        LoadTextureWater();
+    } else {
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(1.0, 0.0, 1.0);
+    }
+
+    glBegin(GL_QUADS); //apa
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(-50.0 f, 0.0 f, -50.0 f);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(-50.0 f, 0.0 f, 50.0 f);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(50.0 f, 0.0 f, 50.0 f);
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(50.0 f, 0.0 f, -50.0 f);
+    glEnd();
+    if (texture == 1) {
+
+        LoadTextureSky();
+    } else {
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(1.0, 1.0, 0.0);
+    }
+    glBegin(GL_QUADS); //cer
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(-50.0 f, 50.0 f, -50.0 f);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(-50.0 f, 50.0 f, 50.0 f);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(50.0 f, 50.0 f, 50.0 f);
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(50.0 f, 50.0 f, -50.0 f);
+    glEnd();
+    if (texture == 1) {
+
+        LoadTextureHorizon();
+    } else {
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(1.0, 1.0, 0.0);
+    }
+    glBegin(GL_QUADS); //spate
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(-50.0 f, 0.0 f, 50.0 f);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(-50.0 f, 50.0 f, 50.0 f);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(50.0 f, 50.0 f, 50.0 f);
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(50.0 f, 0.0 f, 50.0 f);
+    glEnd();
+    glBegin(GL_QUADS); //fata
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(-50.0 f, 0.0 f, -50.0 f);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(-50.0 f, 50.0 f, -50.0 f);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(50.0 f, 50.0 f, -50.0 f);
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(50.0 f, 0.0 f, -50.0 f);
+    glEnd();
+    glBegin(GL_QUADS); //stanga
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(-50.0 f, 0.0 f, -50.0 f);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(-50.0 f, 50.0 f, -50.0 f);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(-50.0 f, 50.0 f, 50.0 f);
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(-50.0 f, 0.0 f, 50.0 f);
+    glEnd();
+    glBegin(GL_QUADS); //stanga
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(50.0 f, 0.0 f, -50.0 f);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(50.0 f, 50.0 f, -50.0 f);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(50.0 f, 50.0 f, 50.0 f);
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(50.0 f, 0.0 f, 50.0 f);
+    glEnd();
+
+    glColor3f(0.89, 0.91, 0.92);
+
+    //VAPORULL:
+    //LoadTextureVapor();
+    glColor3f(0.0 f, 1.0 f, 1.0 f);
+    glPushMatrix();
+
+    glTranslatef(x + lx, 0.0, z + lz);
+    glRotated(unghiRot, 0, 1, 0);
+
+    glDisable(GL_TEXTURE_2D);
+    glBegin(GL_QUADS);
+    //vapor sus
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(-0.5, 0.5, 0.5);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(0.5, 0.5, 0.5);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(0.5, 0.5, -0.5);
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(-0.5, 0.5, -0.5);
+    glEnd();
+    glBegin(GL_TRIANGLES);
+    //sus-spate
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(0.5, 0.5, 0.5);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(-0.5, 0.5, 0.5);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(0, 0.5, 1);
+    //sus-fata
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(-0.5, 0.5, -0.5);
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(0.5, 0.5, -0.5);
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(0, 0.5, -1); // varful
+    glEnd();
+    glFlush();
+    //restul vaporului
+    {
+        glBegin(GL_QUADS);
+        //baza
+        glVertex3f(-0.5, 0, 0.5);
+        glVertex3f(0.5, 0, 0.5);
+        glVertex3f(0.5, 0, -0.5);
+        glVertex3f(-0.5, 0, -0.5);
+        //spatele
+        glVertex3f(-0.5, 0, 0.5);
+        glVertex3f(0.5, 0, 0.5);
+        glVertex3f(0.5, 0.5, 0.5);
+        glVertex3f(-0.5, 0.5, 0.5);
+        //stanga
+        glVertex3f(-0.5, 0, 0.5);
+        glVertex3f(-0.5, 0, -0.5);
+        glVertex3f(-0.5, 0.5, -0.5);
+        glVertex3f(-0.5, 0.5, 0.5);
+
+        //fata
+        glVertex3f(-0.5, 0, -0.5);
+        glVertex3f(0.5, 0, -0.5);
+        glVertex3f(0.5, 0.5, -0.5);
+        glVertex3f(-0.5, 0.5, -0.5);
+
+        //dreapta
+        glVertex3f(0.5, 0, -0.5);
+        glVertex3f(0.5, 0, 0.5);
+        glVertex3f(0.5, 0.5, 0.5);
+        glVertex3f(0.5, 0.5, -0.5);
+
+        //dreapta-spate
+        glVertex3f(0.5, 0, 0.5);
+        glVertex3f(0.5, 0.5, 0.5);
+        glVertex3f(0, 0.5, 1);
+        glVertex3f(0, 0, 1);
+
+        //stanga-spate
+        glVertex3f(-0.5, 0, 0.5);
+        glVertex3f(-0.5, 0.5, 0.5);
+        glVertex3f(0, 0.5, 1);
+        glVertex3f(0, 0, 1);
+
+        //dreapta-fata
+        glVertex3f(0.5, 0, -0.5);
+        glVertex3f(0.5, 0.5, -0.5);
+        glVertex3f(0, 0.5, -1);
+        glVertex3f(0, 0, -1);
+
+        //stanga-fata
+        glVertex3f(-0.5, 0, -0.5);
+        glVertex3f(-0.5, 0.5, -0.5);
+        glVertex3f(0, 0.5, -1);
+        glVertex3f(0, 0, -1);
+        glEnd();
+        glBegin(GL_TRIANGLES);
+        //jos-spate
+        glVertex3f(0.5, 0, 0.5);
+        glVertex3f(-0.5, 0, 0.5);
+        glVertex3f(0, 0, 1);
+        //jos-fata
+        glVertex3f(-0.5, 0, -0.5);
+        glVertex3f(0.5, 0, -0.5);
+        glVertex3f(0, 0, -1);
+        glEnd();
+    }
+    glPopMatrix();
+
+    // Generare ghetari
+    //glColor3f(0.8f, 0.83f, 0.84f);
+    //for (int i = -2; i < 2; i++)
+    //	for (int j = -2; j < 2; j++) {
+    //		glPushMatrix();
+    //		glTranslatef(i*15.0, 0, j * 15.0);
+    //		drawLevels();
+    //		glPopMatrix();
+    //	}
+
+    //ghetari
+    if (hidden == 0)
+        drawLevels();
+    if (ColiziuneMarginiHarta(x + lx, z + lz) == 0) {
+        StopCommands = 1;
+        displayCall();
+    }
+    if (rendermode == LVL2 && hidden == 0) {
+        if (ColiziuneGhetari(x + lx, z + lz) == 0) {
+            StopCommands = 1;
+            displayCall();
+        }
+        if (ColiziuneFinish(x + lx, z + lz) == 0) {
+            StopCommands = 1;
+            displayWin();
+        }
+    }
+    if (rendermode == LVL1)
+        //init();
+        if (rendermode == LVL1 && ColiziuneColaci(x + lx, z + lz) == 0) {
+            if (score == 2) {
+                StopCommands = 1;
+                displayWin();
+            }
+        }
+    glutSwapBuffers();
+}
+
+void processSpecialKeys(int key, int xx, int yy) {
+
+    float fraction = 1.0 f;
+    if (StopCommands == 0)
+        switch (key) {
+        case GLUT_KEY_LEFT:
+            angle -= 0.1 f;
+            lx = sin(angle);
+            lz = -cos(angle);
+            unghiRot += 5.73 f;
+            break;
+        case GLUT_KEY_RIGHT:
+            angle += 0.1 f;
+            lx = sin(angle);
+            lz = -cos(angle);
+            unghiRot -= 5.73 f;
+            break;
+        case GLUT_KEY_UP:
+            x += lx * fraction;
+            z += lz * fraction;
+            break;
+        case GLUT_KEY_DOWN:
+            x -= lx * fraction;
+            z -= lz * fraction;
+            break;
+        }
+}
+
+void processNormalKeys(unsigned char key, int x, int y) {
+    float fraction = 1.0 f;
+
+    switch (key) {
+    case 'c':
+        if (StopCommands == 0)
+            if (camera == 41.0 f)
+                camera = 1.0 f;
+            else
+                camera += 10.0 f;
+        break;
+    case 'h':
+        if (StopCommands == 0)
+            if (hidden == 0)
+                hidden = 1;
+            else
+                hidden = 0;
+        break;
+    case 'l':
+        if (StopCommands == 0)
+            if (rendermode == LVL2)
+                rendermode = LVL1;
+            else
+                rendermode = LVL2;
+        break;
+        //case 't':
+        //	if (StopCommands == 0)
+        //		if (texture == 1)
+        //			texture = 0;
+        //		else
+        //			texture = 1;
+    }
+
+    if (key == 27)
+        exit(0);
+}
+
+int main(int argc, char ** argv) {
+
+    // init GLUT and create window
+
+    glutInit( & argc, argv); // initializare GLUT
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB); // se utilizeaza un singur buffer | modul de colorare RedGreenBlue (= default)
+    //glutInitWindowPosition(100, 100); // pozitia initiala a ferestrei de vizualizare (in coordonate ecran)
+    glutInitWindowSize(1920, 1080);
+    glutCreateWindow("TITANIC");
+    glutFullScreen();
+
+    // register callbacks
+    glutDisplayFunc(renderScene);
+    glutReshapeFunc(changeSize);
+    glutIdleFunc(renderScene);
+    glutKeyboardFunc(processNormalKeys);
+
+    glutSpecialFunc(processSpecialKeys);
+    glutKeyboardFunc(processNormalKeys);
+
+    glutCreateMenu(menu);
+    glutAddMenuEntry("Level 1 (ggez)", LVL1);
+    glutAddMenuEntry("Level 2 (hard bass)", LVL2);
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+    // OpenGL init
+    glEnable(GL_DEPTH_TEST);
+
+    // enter GLUT event processing cycle
+    glutMainLoop();
+
+    return 1;
+}
