@@ -1,0 +1,1015 @@
+#
+include < windows.h > // sunt mentionate fisiere (biblioteci) care urmeaza sa fie incluse
+    #include < gl / freeglut.h > // nu trebuie uitat freeglut.h (sau glut.h sau gl.h & glu.h)
+    #include < iostream > #include < math.h >
+    using namespace std;
+static GLdouble i = 100.0;
+static GLdouble j = 20.0;
+static GLdouble alpha = 0.5;
+static GLdouble beta = 0.5;
+static GLdouble unghi = 0.0;
+static GLdouble unghiA = 0.0;
+static GLdouble unghiS = 0.0;
+double xscale = 1.0;
+double yscale = 1.0;
+static GLint directieCrt = 0;
+static GLint directieAnt = 0;
+static GLint cheat = 0;
+static GLint stop = 0;
+struct Punct {
+    int x, y;
+}
+v[45], p;
+
+float aria(Punct a, Punct b, Punct c) {
+    float AB, BC, AC, P = 0;
+    AB = sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
+    BC = sqrt((c.x - b.x) * (c.x - b.x) + (c.y - b.y) * (c.y - b.y));
+    AC = sqrt((c.x - a.x) * (c.x - a.x) + (c.y - a.y) * (c.y - a.y));
+    P = (AB + BC + AC) / 2;
+    return sqrt(P * (P - AB) * (P - BC) * (P - AC));
+}
+float verificare(Punct a, Punct b, Punct c, Punct m) {
+    if (aria(a, b, m) + aria(a, c, m) + aria(b, m, c) == aria(a, b, c))
+        return 1;
+    else
+        return 0;
+}
+
+int verificareAtat() {
+    //ghetar1
+    v[0].x = 450;
+    v[0].y = 250;
+    v[1].x = 600;
+    v[1].y = 230;
+    v[2].x = 450;
+    v[2].y = 350;
+    v[3].x = 450;
+    v[3].y = 350;
+    v[4].x = 600;
+    v[4].y = 230;
+    v[5].x = 700;
+    v[5].y = 350;
+    v[6].x = 500;
+    v[6].y = 550;
+    v[7].x = 450;
+    v[7].y = 350;
+    v[8].x = 700;
+    v[8].y = 350;
+    //ghetar2
+    v[9].x = 150;
+    v[9].y = 850;
+    v[10].x = 150;
+    v[10].y = 750;
+    v[11].x = 300;
+    v[11].y = 730;
+    v[12].x = 150;
+    v[12].y = 850;
+    v[13].x = 300;
+    v[13].y = 730;
+    v[14].x = 400;
+    v[14].y = 850;
+    v[15].x = 200;
+    v[15].y = 1050;
+    v[16].x = 150;
+    v[16].y = 850;
+    v[17].x = 400;
+    v[17].y = 850;
+    //ghetar3
+    v[18].x = 940;
+    v[18].y = 800;
+    v[19].x = 950;
+    v[19].y = 700;
+    v[20].x = 1100;
+    v[20].y = 680;
+    v[21].x = 940;
+    v[21].y = 800;
+    v[22].x = 1100;
+    v[22].y = 680;
+    v[23].x = 1180;
+    v[23].y = 800;
+    v[24].x = 990;
+    v[24].y = 1000;
+    v[25].x = 940;
+    v[25].y = 800;
+    v[26].x = 1180;
+    v[26].y = 800;
+    //ghetar4
+    v[27].x = 1040;
+    v[27].y = 150;
+    v[28].x = 1050;
+    v[28].y = 50;
+    v[29].x = 1200;
+    v[29].y = 30;
+    v[30].x = 1040;
+    v[30].y = 150;
+    v[31].x = 1200;
+    v[31].y = 30;
+    v[32].x = 1280;
+    v[32].y = 150;
+    v[33].x = 1090;
+    v[33].y = 350;
+    v[34].x = 1040;
+    v[34].y = 150;
+    v[35].x = 1280;
+    v[35].y = 150;
+    //ghetar5
+    v[36].x = 1440;
+    v[36].y = 500;
+    v[37].x = 1450;
+    v[37].y = 400;
+    v[38].x = 1600;
+    v[38].y = 380;
+    v[39].x = 1440;
+    v[39].y = 500;
+    v[40].x = 1600;
+    v[40].y = 380;
+    v[41].x = 1680;
+    v[41].y = 500;
+    v[42].x = 1490;
+    v[42].y = 700;
+    v[43].x = 1440;
+    v[43].y = 500;
+    v[44].x = 1680;
+    v[44].y = 500;
+
+    if (verificare(v[0], v[1], v[2], p) == 1)
+        return 1;
+    if (verificare(v[3], v[4], v[5], p) == 1)
+        return 1;
+    if (verificare(v[6], v[7], v[8], p) == 1)
+        return 1;
+
+    if (verificare(v[9], v[10], v[11], p) == 1)
+        return 1;
+    if (verificare(v[12], v[13], v[14], p) == 1)
+        return 1;
+    if (verificare(v[15], v[16], v[17], p) == 1)
+        return 1;
+
+    if (verificare(v[18], v[19], v[20], p) == 1)
+        return 1;
+    if (verificare(v[21], v[22], v[23], p) == 1)
+        return 1;
+    if (verificare(v[24], v[25], v[26], p) == 1)
+        return 1;
+
+    if (verificare(v[27], v[28], v[29], p) == 1)
+        return 1;
+    if (verificare(v[30], v[31], v[32], p) == 1)
+        return 1;
+    if (verificare(v[33], v[34], v[35], p) == 1)
+        return 1;
+
+    if (verificare(v[36], v[37], v[38], p) == 1)
+        return 1;
+    if (verificare(v[39], v[40], v[41], p) == 1)
+        return 1;
+    if (verificare(v[42], v[43], v[44], p) == 1)
+        return 1;
+    if (i >= 1720 && j >= 0 && j <= 200) {
+        stop = 1;
+        return 2;
+    }
+    if (i >= 1720 && j > 200)
+        return 1;
+    //else
+    //cout << "nu este";
+    //	cout << endl << p.x << " " << p.y << endl;
+    return 0;
+}
+void init(void) // initializare fereastra de vizualizare
+{
+    glClearColor(0.125, 0.698, 0.667, 0.0); // precizeaza culoarea de fond a ferestrei de vizualizare
+    glMatrixMode(GL_PROJECTION); // se precizeaza este vorba de o reprezentare 2D, realizata prin proiectie ortogonala
+    gluOrtho2D(0.0, 1920.0, 0.0, 1080.0); // sunt indicate coordonatele extreme ale ferestrei de vizualizare
+}
+void desen(void) // procedura desenare
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    //soarele
+    if (cheat == 0)
+        glColor3f(0.125, 0.698, 0.667);
+    else if (cheat == 1)
+        glColor3f(1.0, 1.0, 0.0);
+    glPushMatrix();
+    glTranslated(1500, 900, 0);
+    glScalef(xscale, yscale, 0);
+    glRotated(unghiS, 0, 0, 1);
+    glTranslated(-1500, -900, 0);
+    glBegin(GL_POLYGON);
+    glVertex2i(1400, 800);
+    glVertex2i(1400, 1000);
+    glVertex2i(1600, 1000);
+    glVertex2i(1600, 800);
+    glVertex2i(1400, 800);
+    glEnd();
+    glPopMatrix();
+
+    //ghetarul 1:
+    if (cheat == 1)
+        glColor3f(0.125, 0.698, 0.667);
+    else if (cheat == 0)
+        glColor3f(0.827, 0.827, 0.827);
+    glBegin(GL_POLYGON);
+    glVertex2i(150, 750);
+    glVertex2i(300, 730);
+    glVertex2i(400, 850);
+    glVertex2i(200, 1050);
+    glVertex2i(150, 850);
+    glVertex2i(150, 750);
+    glEnd();
+
+    //ghetarul 2:
+    if (cheat == 1)
+        glColor3f(0.125, 0.698, 0.667);
+    else if (cheat == 0)
+        glColor3f(0.827, 0.827, 0.827);
+    glBegin(GL_POLYGON);
+    glVertex2i(450, 250);
+    glVertex2i(600, 230);
+    glVertex2i(700, 350);
+    glVertex2i(500, 550);
+    glVertex2i(450, 350);
+    glVertex2i(450, 250);
+    glEnd();
+
+    //ghetarul 3:
+    if (cheat == 1)
+        glColor3f(0.125, 0.698, 0.667);
+    else if (cheat == 0)
+        glColor3f(0.827, 0.827, 0.827);
+    glBegin(GL_POLYGON);
+    glVertex2i(950, 700);
+    glVertex2i(1100, 680);
+    glVertex2i(1180, 800);
+    glVertex2i(990, 1000);
+    glVertex2i(940, 800);
+    glVertex2i(950, 700);
+    glEnd();
+
+    //ghetarul 4:
+    if (cheat == 1)
+        glColor3f(0.125, 0.698, 0.667);
+    else if (cheat == 0)
+        glColor3f(0.827, 0.827, 0.827);
+    glBegin(GL_POLYGON);
+    glVertex2i(1050, 50);
+    glVertex2i(1200, 30);
+    glVertex2i(1280, 150);
+    glVertex2i(1090, 350);
+    glVertex2i(1040, 150);
+    glVertex2i(1050, 50);
+    glEnd();
+
+    //ghetarul 5:
+    if (cheat == 1)
+        glColor3f(0.125, 0.698, 0.667);
+    else if (cheat == 0)
+        glColor3f(0.827, 0.827, 0.827);
+    glBegin(GL_POLYGON);
+    glVertex2i(1450, 400);
+    glVertex2i(1600, 380);
+    glVertex2i(1680, 500);
+    glVertex2i(1490, 700);
+    glVertex2i(1440, 500);
+    glVertex2i(1450, 400);
+    glEnd();
+
+    //VAPORUL:
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(0.0, 0.0, 0.0);
+    glBegin(GL_POLYGON);
+    glVertex2i(0, 0);
+    glVertex2i(100, 0);
+    glVertex2i(135, 20);
+    glVertex2i(135, 30);
+    glVertex2i(100, 50);
+    glVertex2i(0, 50);
+    glVertex2i(-35, 30);
+    glVertex2i(-35, 20);
+    glVertex2i(0, 0);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(0.64, 0.14, 0.14); //puntea maro
+    glBegin(GL_POLYGON);
+    glVertex2i(0, 5);
+    glVertex2i(100, 5);
+    glVertex2i(130, 25);
+    glVertex2i(130, 25);
+    glVertex2i(100, 45);
+    glVertex2i(0, 45);
+    glVertex2i(-30, 25);
+    glVertex2i(-30, 25);
+    glVertex2i(0, 5);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_POLYGON);
+    glVertex2i(120, 23);
+    glVertex2i(120, 27);
+    glVertex2i(130, 25);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_POLYGON);
+    glVertex2i(-20, 23);
+    glVertex2i(-20, 27);
+    glVertex2i(-30, 25);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(0.18, 0.3, 0.3); //puntea gri
+    glBegin(GL_POLYGON);
+    glVertex2i(0, 10);
+    glVertex2i(100, 10);
+    glVertex2i(120, 20);
+    glVertex2i(120, 30);
+    glVertex2i(100, 40);
+    glVertex2i(0, 40);
+    glVertex2i(-20, 30);
+    glVertex2i(-20, 20);
+    glVertex2i(0, 10);
+    glEnd();
+    glPopMatrix();
+
+    //turn1
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(0.8, 0.7, 0.19);
+    glBegin(GL_POLYGON);
+    glVertex2i(10, 15);
+    glVertex2i(20, 15);
+    glVertex2i(25, 20);
+    glVertex2i(25, 30);
+    glVertex2i(20, 35);
+    glVertex2i(10, 35);
+    glVertex2i(5, 30);
+    glVertex2i(5, 20);
+    glVertex2i(10, 15);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(0.1, 0.1, 0.1);
+    glBegin(GL_POLYGON);
+    glVertex2i(10, 17);
+    glVertex2i(20, 17);
+    glVertex2i(23, 20);
+    glVertex2i(23, 30);
+    glVertex2i(20, 33);
+    glVertex2i(10, 33);
+    glVertex2i(7, 30);
+    glVertex2i(7, 20);
+    glVertex2i(10, 17);
+    glEnd();
+    glPopMatrix();
+
+    //turn2
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(0.8, 0.7, 0.19);
+    glBegin(GL_POLYGON);
+    glVertex2i(40, 15);
+    glVertex2i(50, 15);
+    glVertex2i(55, 20);
+    glVertex2i(55, 30);
+    glVertex2i(50, 35);
+    glVertex2i(40, 35);
+    glVertex2i(35, 30);
+    glVertex2i(35, 20);
+    glVertex2i(40, 15);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(0.1, 0.1, 0.1);
+    glBegin(GL_POLYGON);
+    glVertex2i(40, 17);
+    glVertex2i(50, 17);
+    glVertex2i(53, 20);
+    glVertex2i(53, 30);
+    glVertex2i(50, 33);
+    glVertex2i(40, 33);
+    glVertex2i(37, 30);
+    glVertex2i(37, 20);
+    glVertex2i(40, 17);
+    glEnd();
+    glPopMatrix();
+
+    //turn3
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(0.8, 0.7, 0.19);
+    glBegin(GL_POLYGON);
+    glVertex2i(70, 15);
+    glVertex2i(80, 15);
+    glVertex2i(85, 20);
+    glVertex2i(85, 30);
+    glVertex2i(80, 35);
+    glVertex2i(70, 35);
+    glVertex2i(65, 30);
+    glVertex2i(65, 20);
+    glVertex2i(70, 15);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(0.1, 0.1, 0.1);
+    glBegin(GL_POLYGON);
+    glVertex2i(70, 17);
+    glVertex2i(80, 17);
+    glVertex2i(83, 20);
+    glVertex2i(83, 30);
+    glVertex2i(80, 33);
+    glVertex2i(70, 33);
+    glVertex2i(67, 30);
+    glVertex2i(67, 20);
+    glVertex2i(70, 17);
+    glEnd();
+    glPopMatrix();
+
+    //FERESTRE JOS:
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(10, 5, 15, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(20, 5, 25, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(30, 5, 35, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(40, 5, 45, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(50, 5, 55, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(60, 5, 65, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(70, 5, 75, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(80, 5, 85, 10);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(90, 5, 95, 10);
+    glPopMatrix();
+
+    //FERESTRE JOS:
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(10, 45, 15, 40);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(20, 45, 25, 40);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(30, 45, 35, 40);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(40, 45, 45, 40);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(50, 45, 55, 40);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(60, 45, 65, 40);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(70, 45, 75, 40);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(80, 45, 85, 40);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslated(i, j, 0.0);
+    glRotated(unghi, 0, 0, 1);
+    glColor3f(1.0, 1.0, 0.0);
+    glRecti(90, 45, 95, 40);
+    glPopMatrix();
+
+    glEnd();
+
+    //plaja
+    glColor3f(0.545, 0.271, 0.075);
+    glBegin(GL_POLYGON);
+    glVertex2i(1920, 1080);
+    glVertex2i(1800, 900);
+    glVertex2i(1850, 800);
+    glVertex2i(1800, 500);
+    glVertex2i(1750, 400);
+    glVertex2i(1850, 300);
+    glVertex2i(1900, 200);
+    glVertex2i(1920, 0);
+    glEnd();
+
+    //portul:
+    glColor3f(0.502, 0.000, 0.502);
+    glRecti(1820, 0, 1920, 200);
+
+    //litere:
+    //P:
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_POLYGON);
+    glVertex2i(1860, 170);
+    glVertex2i(1860, 190);
+    glVertex2i(1890, 190);
+    glVertex2i(1890, 170);
+    glVertex2i(1860, 170);
+    glEnd();
+    glBegin(GL_POLYGON);
+    glVertex2i(1860, 150);
+    glVertex2i(1870, 150);
+    glVertex2i(1870, 170);
+    glVertex2i(1860, 170);
+    glVertex2i(1860, 150);
+    glEnd();
+    glColor3f(0.502, 0.000, 0.502);
+    glBegin(GL_POLYGON);
+    glVertex2i(1870, 175);
+    glVertex2i(1880, 175);
+    glVertex2i(1880, 185);
+    glVertex2i(1870, 185);
+    glVertex2i(1870, 175);
+    glEnd();
+
+    // O:
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_POLYGON);
+    glVertex2i(1860, 100);
+    glVertex2i(1860, 140);
+    glVertex2i(1890, 140);
+    glVertex2i(1890, 100);
+    glVertex2i(1860, 100);
+    glEnd();
+    glColor3f(0.502, 0.000, 0.502);
+    glBegin(GL_POLYGON);
+    glVertex2i(1870, 110);
+    glVertex2i(1870, 130);
+    glVertex2i(1880, 130);
+    glVertex2i(1880, 110);
+    glVertex2i(1870, 110);
+    glEnd();
+
+    // R:
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_POLYGON);
+    glVertex2i(1860, 70);
+    glVertex2i(1860, 90);
+    glVertex2i(1890, 90);
+    glVertex2i(1890, 70);
+    glVertex2i(1860, 70);
+    glEnd();
+    glBegin(GL_POLYGON);
+    glVertex2i(1860, 50);
+    glVertex2i(1870, 50);
+    glVertex2i(1870, 70);
+    glVertex2i(1860, 70);
+    glVertex2i(1860, 50);
+    glEnd();
+    glBegin(GL_POLYGON);
+    glVertex2i(1880, 50);
+    glVertex2i(1890, 50);
+    glVertex2i(1875, 70);
+    glVertex2i(1870, 70);
+    glVertex2i(1870, 65);
+    glVertex2i(1880, 50);
+    glEnd();
+    glColor3f(0.502, 0.000, 0.502);
+    glBegin(GL_POLYGON);
+    glVertex2i(1870, 75);
+    glVertex2i(1880, 75);
+    glVertex2i(1880, 85);
+    glVertex2i(1870, 85);
+    glVertex2i(1870, 75);
+    glEnd();
+
+    // T:
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_POLYGON);
+    glVertex2i(1870, 0);
+    glVertex2i(1870, 30);
+    glVertex2i(1880, 30);
+    glVertex2i(1880, 0);
+    glVertex2i(1870, 0);
+    glEnd();
+    glBegin(GL_POLYGON);
+    glVertex2i(1860, 30);
+    glVertex2i(1860, 40);
+    glVertex2i(1890, 40);
+    glVertex2i(1890, 30);
+    glVertex2i(1860, 30);
+    glEnd();
+
+    glutSwapBuffers();
+    glFlush();
+}
+
+void rotireStDr() {
+    if (unghiA <= 180 && unghiA > 0) {
+        unghi -= 0.5;
+        unghiA -= 0.5;
+    }
+    glutPostRedisplay();
+}
+void rotireJosDr() {
+    if (unghiA >= 270 && unghiA < 360) {
+        unghi += 0.5;
+        unghiA += 0.5;
+    }
+    glutPostRedisplay();
+}
+void rotireSusDr() {
+    if (unghiA <= 90 && unghiA > 0) {
+        unghi -= 0.5;
+        unghiA -= 0.5;
+    }
+    glutPostRedisplay();
+}
+void miscadreapta(void) {
+    if (directieAnt == 0 || directieAnt == 3) {
+        rotireStDr();
+    } else if (directieAnt == 2) {
+        rotireJosDr();
+    } else if (directieAnt == 1) {
+        rotireSusDr();
+    }
+    i = i + alpha;
+    p.x = i + 130;
+    p.y = j + 25;
+    if (verificareAtat() == 1 && cheat == 0)
+        exit(0);
+    if (verificareAtat() == 2)
+        alpha = 0;
+    if (i > 1920.0 && stop == 0 && cheat == 0)
+        exit(0);
+    else if (i > 1920.0 && stop == 0 && cheat == 1)
+        alpha = -0.25;
+    else if (i < 0.0)
+        alpha = 0.25;
+    unghiS += 2;
+    glutPostRedisplay();
+}
+
+void rotireDrSus() {
+    if (unghiA >= 0 && unghiA < 90) {
+        unghi += 0.5;
+        unghiA += 0.5;
+    }
+    glutPostRedisplay();
+}
+void rotireStSus() {
+    if (unghiA > 90 && unghiA <= 180) {
+        unghi -= 0.5;
+        unghiA -= 0.5;
+    }
+    glutPostRedisplay();
+}
+void rotireJosSus() {
+    if (unghiA >= 270 && unghiA < 450) {
+        unghi += 0.5;
+        unghiA += 0.5;
+    }
+    glutPostRedisplay();
+}
+void miscasus(void) {
+    if (directieAnt == 0 || directieAnt == 4) {
+        rotireDrSus();
+    } else if (directieAnt == 3) {
+        rotireStSus();
+    } else if (directieAnt == 2) {
+        rotireJosSus();
+    }
+    j = j + beta;
+    p.x = i;
+    p.y = j + 130;
+    if (verificareAtat() == 1 && cheat == 0)
+        exit(0);
+    if (j > 1080.0 && cheat == 0)
+        exit(0);
+    else if (j > 1080.0 && cheat == 1)
+        beta = -0.25;
+    else if (j < 0.0)
+        beta = 0.25;
+    unghiS += 2;
+    glutPostRedisplay();
+}
+
+void rotireDrSt() {
+    if (unghiA >= 0 && unghiA < 180) {
+        unghi += 0.5;
+        unghiA += 0.5;
+    }
+    glutPostRedisplay();
+}
+void rotireSusSt() {
+    if (unghiA >= 90 && unghiA < 180) {
+        unghi += 0.5;
+        unghiA += 0.5;
+    }
+    glutPostRedisplay();
+}
+void rotireJosSt() {
+    if (unghiA > 180 && unghiA <= 270) {
+        unghi -= 0.5;
+        unghiA -= 0.5;
+    }
+    glutPostRedisplay();
+}
+void miscastanga(void) {
+    if (directieAnt == 4) {
+        rotireDrSt();
+    } else if (directieAnt == 2) {
+        rotireJosSt();
+    } else if (directieAnt == 1) {
+        rotireSusSt();
+    }
+    i = i + alpha;
+    p.x = i - 130;
+    p.y = j - 25;
+    if (verificareAtat() == 1 && cheat == 0)
+        exit(0);
+    if (i < 0.0 && cheat == 0)
+        exit(0);
+    else if (i < 0.0 && cheat == 1)
+        alpha = 0.25;
+    else if (i > 1920.0)
+        alpha = -0.25;
+    if (verificareAtat() == 2)
+        alpha = 0;
+    unghiS += 2;
+    glutPostRedisplay();
+}
+
+void rotireDrJos() {
+    if (unghiA >= 0 && unghiA < 90) {
+        unghi -= 0.5;
+        unghiA += 0.5;
+    }
+    glutPostRedisplay();
+}
+void rotireStJos() {
+    if (unghiA >= 180 && unghiA < 270) {
+        unghi += 0.5;
+        unghiA += 0.5;
+    }
+    glutPostRedisplay();
+}
+void rotireSusJos() {
+    if (unghiA >= 90 && unghiA < 270) {
+        unghi += 0.5;
+        unghiA += 0.5;
+    }
+    glutPostRedisplay();
+}
+void miscajos(void) {
+    if (directieAnt == 0 || directieAnt == 4) {
+        rotireDrJos();
+    } else if (directieAnt == 3) {
+        rotireStJos();
+    } else if (directieAnt == 1) {
+        rotireSusJos();
+    }
+    j = j + beta;
+    p.x = i;
+    p.y = j - 130;
+    if (verificareAtat() == 1 && cheat == 0)
+        exit(0);
+    if (j < 0.0 && cheat == 0)
+        exit(0);
+    else if (j < 0.0 && cheat == 1)
+        beta = 0.25;
+    else if (j > 1080.0)
+        beta = -0.25;
+    unghiS += 2;
+    glutPostRedisplay();
+}
+
+void rotireSoareSt() {
+    unghiS -= 2;
+    glutPostRedisplay();
+}
+void rotireSoareDr() {
+    unghiS += 2;
+    glutPostRedisplay();
+}
+void zoom_in() {
+    xscale += 0.1;
+    yscale += 0.1;
+}
+void zoom_out() {
+    xscale -= 0.1;
+    yscale -= 0.1;
+}
+
+void mouseWheel(int button, int dir, int x, int y) {
+    if (dir > 0) {
+        zoom_in();
+    } else {
+        zoom_out();
+    }
+
+    return;
+}
+
+void Tastatura(int key, int x, int y) {
+    switch (key) {
+    case GLUT_KEY_F1:
+        glutIdleFunc(rotireSoareSt);
+        break;
+    case GLUT_KEY_F2:
+        glutIdleFunc(rotireSoareDr);
+        break;
+    case GLUT_KEY_PAGE_UP:
+        cheat = 1;
+        glutIdleFunc(rotireSoareDr);
+        break;
+    case GLUT_KEY_PAGE_DOWN:
+        cheat = 0;
+        break;
+    case GLUT_KEY_UP:
+        directieAnt = directieCrt;
+        if (directieAnt == 4)
+            unghiA = 0;
+        if (directieAnt == 3)
+            unghiA = 180;
+        if (directieAnt == 2)
+            unghiA = 270;
+        beta = 0.25;
+        glutIdleFunc(miscasus);
+        directieCrt = 1;
+        break;
+    case GLUT_KEY_DOWN:
+        directieAnt = directieCrt;
+        if (directieAnt == 4)
+            unghiA = 0;
+        if (directieAnt == 3)
+            unghiA = 180;
+        if (directieAnt == 1)
+            unghiA = 90;
+        beta = -0.25;
+        glutIdleFunc(miscajos);
+        directieCrt = 2;
+        break;
+    case GLUT_KEY_LEFT:
+        directieAnt = directieCrt;
+        if (directieAnt == 4)
+            unghiA = 0;
+        if (directieAnt == 2)
+            unghiA = 270;
+        if (directieAnt == 1)
+            unghiA = 90;
+        alpha = -0.25;
+        glutIdleFunc(miscastanga);
+        directieCrt = 3;
+        break;
+    case GLUT_KEY_RIGHT:
+        directieAnt = directieCrt;
+        if (directieAnt == 3)
+            unghiA = 180;
+        if (directieAnt == 2)
+            unghiA = 270;
+        if (directieAnt == 1)
+            unghiA = 90;
+        alpha = 0.25;
+        glutIdleFunc(miscadreapta);
+        directieCrt = 4;
+        break;
+    case GLUT_KEY_END:
+        glutIdleFunc(rotireSoareDr);
+        alpha = 0.0;
+        beta = 0.0;
+        break;
+    }
+
+    glutPostRedisplay();
+}
+void mouse(int button, int state, int x, int y) {
+    switch (button) {
+    case GLUT_LEFT_BUTTON:
+        if (state == GLUT_DOWN)
+            glutIdleFunc(rotireSoareSt);
+        break;
+    case GLUT_RIGHT_BUTTON:
+        if (state == GLUT_DOWN)
+            glutIdleFunc(rotireSoareDr);
+        break;
+    default:
+        break;
+    }
+}
+
+int main(int argc, char ** argv) {
+
+    glutInit( & argc, argv); // initializare GLUT
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB); // se utilizeaza un singur buffer | modul de colorare RedGreenBlue (= default)
+    glutInitWindowPosition(100, 100); // pozitia initiala a ferestrei de vizualizare (in coordonate ecran)
+    glutInitWindowSize(1920, 1080);
+    glutCreateWindow("TITANIC");
+    glutFullScreen();
+    init(); // executa procedura de initializare
+    glClear(GL_COLOR_BUFFER_BIT); // reprezentare si colorare fereastra de vizualizare
+    glutDisplayFunc(desen); // procedura desen este invocata ori de cate ori este nevoie
+    //glutDisplayFunc(dreptunghi);
+    //glutMouseFunc(mouse);
+    glutSpecialFunc(Tastatura);
+    glutMouseFunc(mouse);
+    glutMouseWheelFunc(mouseWheel);
+    glutMainLoop(); // ultima instructiune a programului, asteapta (eventuale) noi date de intrare
+}
